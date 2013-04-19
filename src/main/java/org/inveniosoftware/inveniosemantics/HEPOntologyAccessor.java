@@ -1,8 +1,5 @@
 package org.inveniosoftware.inveniosemantics;
-//
-//import com.hp.hpl.jena.rdf.model.*;
-//import com.hp.hpl.jena.reasoner.*;
-//import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;

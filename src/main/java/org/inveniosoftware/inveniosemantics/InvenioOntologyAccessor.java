@@ -43,6 +43,8 @@ public class InvenioOntologyAccessor {
     public static final String HAS_BOUNDARY = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#hasBoundary";
     public static final String NSPREFIX = "inveniomodel";
     public static final String NSURI = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#";
+    public static final String EXTRACTED_FROM = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#extractedFrom";
+    
     public Resource coordinateSystem;
     public Resource plot;
     public Resource axis;
@@ -57,6 +59,7 @@ public class InvenioOntologyAccessor {
     public Property hasYCoordinate;
     public Property hasWidth;
     public Property hasHeight;
+    public Property extractedFrom;
 
     public InvenioOntologyAccessor(String inputFileName) {
         _inputFileName = inputFileName;
@@ -86,6 +89,8 @@ public class InvenioOntologyAccessor {
         this.hasYCoordinate = this._model.createProperty(InvenioOntologyAccessor.HAS_Y_COORDINATE);
         this.hasWidth = this._model.createProperty(InvenioOntologyAccessor.HAS_WIDTH);
         this.hasHeight = this._model.createProperty(InvenioOntologyAccessor.HAS_HEIGHT);
+        this.extractedFrom = this._model.createProperty(InvenioOntologyAccessor.EXTRACTED_FROM);
+        
 
     }
 

@@ -4,6 +4,8 @@
  */
 package org.inveniosoftware.inveniosemantics;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.CannotEncodeCharacterException;
 import invenio.pdf.features.FigureCandidate;
 import invenio.pdf.features.XMLDocumentReader;
 import java.io.File;
@@ -31,15 +33,21 @@ public class UploadExtractedFigures {
         System.out.println("Directories are searched for all available XML files (only directly under the directory path, not in subdirectories)");
     }
 
-    public static void uploadFigure(FigureCandidate figure) {
+    public static void uploadFigure(InspireDatabase db, FigureCandidate figure, File inputFile) {
         System.out.println("uploadng figure");
+        String pubname = "http://inspirehep.net/" + inputFile.getName().split("_")[0];
+        String pubURI = pubname;
+        Resource pubResource = db.createPublication(pubURI);
+        
+        db.createFigure(db, pubResource, figure);
+        
     }
 
-    public static void processFile(File input) {
+    public static void processFile(InspireDatabase db, File input) {
         try {
             List<FigureCandidate> figures = XMLDocumentReader.readDocument(input);
             for (FigureCandidate fig : figures) {
-                uploadFigure(fig);
+                uploadFigure(db, fig, input);
             }
         } catch (ParserConfigurationException ex) {
             System.err.println("XML parsing exception (ParserConfiguration) when processing" + input.getAbsolutePath());
@@ -61,11 +69,17 @@ public class UploadExtractedFigures {
         if (args.length < 1) {
             usage();
             //return;
-            
+
             args = new String[1];
             args[0] = "/home/piotr/sampleArticlesForFigureAnalysis/cleaned";
-            
+
         }
+
+        System.out.println("Starting");
+
+        InspireDatabase db = new InspireDatabase("/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files/HEPont.rdf", "/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files/inveniomodel.owl", "/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files/output.rdf");
+
+
         for (String fname : args) {
             File input = new File(fname);
             if (!input.exists()) {
@@ -80,11 +94,15 @@ public class UploadExtractedFigures {
                     }
                 });
                 for (File f : files) {
-                    processFile(f);
+                    processFile(db, f);
                 }
             } else {
-                processFile(input);
+                processFile(db, input);
             }
         }
+        //try{
+        db.writeOuput();
+        
+        System.out.println("Finished");
     }
 }

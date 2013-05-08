@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,9 +39,9 @@ public class UploadExtractedFigures {
         String pubname = "http://inspirehep.net/" + inputFile.getName().split("_")[0];
         String pubURI = pubname;
         Resource pubResource = db.createPublication(pubURI);
-        
+
         db.createFigure(db, pubResource, figure);
-        
+
     }
 
     public static void processFile(InspireDatabase db, File input) {
@@ -65,7 +66,7 @@ public class UploadExtractedFigures {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length < 1) {
             usage();
             //return;
@@ -77,7 +78,7 @@ public class UploadExtractedFigures {
 
         System.out.println("Starting");
 
-        InspireDatabase db = new InspireDatabase("/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files/HEPont.rdf", "/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files/inveniomodel.owl", "/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files/output.rdf");
+        InspireDatabase db = new InspireDatabase("/home/piotr/Dropbox/PhdThesis/Ontology/inspire/files", false);
 
 
         for (String fname : args) {
@@ -102,7 +103,19 @@ public class UploadExtractedFigures {
         }
         //try{
         db.writeOuput();
-        
+
+        System.out.println("Executing sample queries: ");
+        System.out.println("  Searching for a HEP notion: ");
+        Set<Resource> searchForHEPNotion = db.searchForHEPNotion(null);
+        for (Resource res : searchForHEPNotion) {
+            System.out.println("    " + res.getURI());
+        }
+        System.out.println("  Searching for a HEP notion using the hierarchy: ");
+        searchForHEPNotion = db.searchForHEPNotionHierarchy(null);
+        for (Resource res : searchForHEPNotion) {
+            System.out.println("    " + res.getURI());
+        }
+
         System.out.println("Finished");
     }
 }

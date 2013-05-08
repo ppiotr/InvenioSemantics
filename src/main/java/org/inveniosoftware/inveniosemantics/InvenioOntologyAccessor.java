@@ -11,7 +11,7 @@ import java.io.OutputStream;
 public class InvenioOntologyAccessor {
 
     private String _inputFileName;
-    private Model _model;
+    public Model _model;
     public static final String BASEDON = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#basedOn";
     public static final String EXTRACTEDFROM = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#extractedFrom";
     public static final String BIBOBJECT = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#BibObject";
@@ -41,6 +41,8 @@ public class InvenioOntologyAccessor {
     public static final String HAS_WIDTH = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#hasWidth";
     public static final String HAS_HEIGHT = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#hasHeight";
     public static final String HAS_BOUNDARY = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#hasBoundary";
+    public static final String HAS_UNIT = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#hasUnit";
+    
     public static final String NSPREFIX = "inveniomodel";
     public static final String NSURI = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#";
     public static final String EXTRACTED_FROM = "http://www.semanticweb.org/ontologies/invenio/inveniomodel.owl#extractedFrom";
@@ -59,6 +61,7 @@ public class InvenioOntologyAccessor {
     public Property hasYCoordinate;
     public Property hasWidth;
     public Property hasHeight;
+    public Property hasUnit;
     public Property extractedFrom;
 
     public InvenioOntologyAccessor(String inputFileName) {
@@ -89,6 +92,7 @@ public class InvenioOntologyAccessor {
         this.hasYCoordinate = this._model.createProperty(InvenioOntologyAccessor.HAS_Y_COORDINATE);
         this.hasWidth = this._model.createProperty(InvenioOntologyAccessor.HAS_WIDTH);
         this.hasHeight = this._model.createProperty(InvenioOntologyAccessor.HAS_HEIGHT);
+        this.hasUnit = this._model.createProperty(InvenioOntologyAccessor.HAS_UNIT);
         this.extractedFrom = this._model.createProperty(InvenioOntologyAccessor.EXTRACTED_FROM);
         
 

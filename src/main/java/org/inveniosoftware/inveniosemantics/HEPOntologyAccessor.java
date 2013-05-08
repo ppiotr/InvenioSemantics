@@ -16,6 +16,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.util.FileManager;
+import invenio.common.Pair;
 import invenio.common.PrefixTree;
 import java.io.*;
 import java.util.*;
@@ -26,7 +27,7 @@ import java.util.*;
 public class HEPOntologyAccessor {
 
     private String _inputFileName;
-    private Model _model;
+    public Model _model;
     private static final String NARROWER = "narrower";
     private static final String PREFLABEL = "prefLabel";
     public static final String NSPREFIX = "hep";
@@ -422,7 +423,7 @@ public class HEPOntologyAccessor {
                 successfulLabels.retainAll(labels);
             }
         }
-        
+
         // we have a list of matching labels ... now we have to check if the matching is complete
         HashSet<Resource> result = new HashSet<>();
         for (String label : successfulLabels) {
@@ -432,8 +433,38 @@ public class HEPOntologyAccessor {
                 result.addAll(this.labelToResource.get(label));
             }
         }
-        
+
         return result;
+    }
+
+    /**
+     * Returns pairs of notions of the HEP ontology, where one notion is a
+     * descendant of the other and both are standalone
+     *
+     * @return
+     */
+    public Set<Pair<Resource, Resource>> getStandaloneDescendants() {
+        HashSet<Pair<Resource, Resource>> resultSet = new HashSet<>();
+
+        String query = "PREFIX dc: <http://purl.org/dc/elements/1.1/> "
+                + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                + "PREFIX hep: <http://cern.ch/thesauri/HEPontology.rdf#> "
+                + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
+                + "SELECT ?notion1 ?notion2 "
+                + "WHERE { ?notion1 rdf:type skos:Concept. ?notion2 rdf:type skos:Concept. ?notion1 skos:composite ?notion2. } ";
+
+        QueryExecution qexec = QueryExecutionFactory.create(query, _model);
+        ResultSet results = qexec.execSelect();
+
+        //working with text
+        while (results.hasNext()) {
+            QuerySolution soln = results.nextSolution();
+            Resource n1 = soln.getResource("notion1");
+            Resource n2 = soln.getResource("notion2");
+
+            resultSet.add(new Pair<Resource, Resource>(n1, n2));
+        }
+        return resultSet;
     }
 
     public static void main(String[] args) {
@@ -461,6 +492,11 @@ public class HEPOntologyAccessor {
             System.out.println(r);
         }
 
+        System.out.println("standalone descendances: ");
+        Set<Pair<Resource, Resource>> standaloneDescendants = hep.getStandaloneDescendants();
+        for (Pair<Resource, Resource> p : standaloneDescendants) {
+            System.out.println("   " + p.first.getLocalName() + "  ->  " + p.second.getLocalName());
+        }
         System.out.println("Finished");
 
     }
